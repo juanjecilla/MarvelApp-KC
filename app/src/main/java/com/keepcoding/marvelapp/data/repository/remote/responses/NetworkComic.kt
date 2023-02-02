@@ -4,4 +4,5 @@ data class NetworkComic(
     val id: Int,
     val title: String,
     val pageCount: Int,
+    val thumbnail: NetworkThumbnailData
 )

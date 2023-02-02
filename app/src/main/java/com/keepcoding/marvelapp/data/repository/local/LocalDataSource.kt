@@ -5,5 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     fun getHeros(): Flow<List<LocalHero>>
-    fun insertHeros(heros: List<LocalHero>)
+    suspend fun getHerosCount(): Int
+    suspend fun insertHeros(heros: List<LocalHero>)
+    suspend fun toggleFavourite(hero: LocalHero)
 }

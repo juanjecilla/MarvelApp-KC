@@ -3,7 +3,7 @@ package com.keepcoding.marvelapp.di
 import android.content.Context
 import androidx.room.Room
 import com.keepcoding.marvelapp.data.repository.local.MarvelDAO
-import com.keepcoding.androidavanzado.data.local.MarvelAppDatabase
+import com.keepcoding.marvelapp.data.repository.local.MarvelAppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

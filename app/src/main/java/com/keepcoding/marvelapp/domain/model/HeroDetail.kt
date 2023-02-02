@@ -7,5 +7,4 @@ data class HeroDetail(
     val description: String,
     val comicsCount: Int,
     val seriesCount: Int,
-    val favorite: Boolean,
 )

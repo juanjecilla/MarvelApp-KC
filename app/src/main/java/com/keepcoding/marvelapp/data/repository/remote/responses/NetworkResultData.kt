@@ -1,9 +1,8 @@
 package com.keepcoding.marvelapp.data.repository.remote.responses
 
-import com.keepcoding.marvelapp.data.repository.remote.responses.NetworkMarvelCharacter
 import com.squareup.moshi.Json
 
-data class NetworkResultData(
+data class NetworkResultData<T>(
 
     @Json(name = "total")
     val total: Int,
@@ -18,5 +17,5 @@ data class NetworkResultData(
     val count: Int,
 
     @Json(name = "results")
-    val results: List<NetworkMarvelCharacter>
+    val results: List<T>
 )

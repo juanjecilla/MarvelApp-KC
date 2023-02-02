@@ -4,4 +4,5 @@ data class Comic(
     val id: Int,
     val title: String,
     val pageCount: Int,
+    val photo: String
 )

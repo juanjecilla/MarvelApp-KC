@@ -12,6 +12,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.util.*
 import javax.inject.Singleton
 
@@ -20,6 +22,11 @@ import javax.inject.Singleton
 object NetworkModule {
 
     private const val BASE_URL = "https://gateway.marvel.com"
+
+    fun md5(input:String): String {
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
+    }
 
     @Provides
     fun provideMoshi(): Moshi {
@@ -35,6 +42,18 @@ object NetworkModule {
         if (BuildConfig.DEBUG) {
             httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(httpLoggingInterceptor)
+        }
+        clientBuilder.addInterceptor {
+            val ts = System.currentTimeMillis()
+            val originalRequest = it.request()
+            val hash = md5("${ts}3e47ad8778a31d615699d6d5685dadf82f843ad01433ceeca9030f34da73d0bbe4d722e1")
+            val url = originalRequest.url.newBuilder()
+                .addQueryParameter("ts", ts.toString())
+                .addQueryParameter("apikey", "1433ceeca9030f34da73d0bbe4d722e1")
+                .addQueryParameter("hash", hash)
+                .build()
+
+            it.proceed(originalRequest.newBuilder().url(url).build())
         }
 
         return clientBuilder.build()

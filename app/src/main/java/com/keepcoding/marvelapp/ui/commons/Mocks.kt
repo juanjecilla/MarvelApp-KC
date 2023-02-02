@@ -1,7 +1,9 @@
 package com.keepcoding.marvelapp.ui.commons
 
+import com.keepcoding.marvelapp.domain.model.Comic
 import com.keepcoding.marvelapp.domain.model.Hero
 import com.keepcoding.marvelapp.domain.model.HeroDetail
+import com.keepcoding.marvelapp.domain.model.Serie
 
 object Mocks {
 
@@ -22,6 +24,14 @@ object Mocks {
         seriesCount: Int = 5,
         favorite: Boolean = false,
     ): HeroDetail {
-        return HeroDetail(id, name, photo, description, comicsCount, seriesCount, favorite)
+        return HeroDetail(id, name, photo, description, comicsCount, seriesCount)
+    }
+
+    fun getComics(): List<Comic> {
+        return listOf()
+    }
+
+    fun getSeries(): List<Serie> {
+        return listOf()
     }
 }

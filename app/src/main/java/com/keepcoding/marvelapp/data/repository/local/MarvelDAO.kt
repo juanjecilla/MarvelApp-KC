@@ -1,22 +1,27 @@
 package com.keepcoding.marvelapp.data.repository.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.keepcoding.androidavanzado.data.local.model.SuperHeroDetailLocal
+import androidx.room.Update
+import com.keepcoding.marvelapp.data.repository.local.model.FavouriteUpdate
 import com.keepcoding.marvelapp.data.repository.local.model.LocalHero
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MarvelDAO {
     @Query("SELECT * FROM superheros")
-    fun getAllSuperheros(): Flow<List<LocalHero>>
+    fun getHeros(): Flow<List<LocalHero>>
+
+    @Query("SELECT COUNT(id) FROM superheros")
+    fun getHerosCount(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(superHero: List<LocalHero>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertSuperhero(superHero: LocalHero)
+    fun insertHero(superHero: LocalHero)
+    @Update(LocalHero::class)
+    fun updateFavourite(update: FavouriteUpdate)
 }
