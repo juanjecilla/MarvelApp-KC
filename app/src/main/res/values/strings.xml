@@ -4,4 +4,7 @@
     <string name="not_favorite">No favorito</string>
     <string name="series_label">Series</string>
     <string name="comics_label">Comics</string>
+    <string name="page_count_placeholder">Pages: %d</string>
+    <string name="no_description">No description available...</string>
+    <string name="description_label">Description</string>
 </resources>

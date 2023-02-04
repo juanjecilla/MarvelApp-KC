@@ -1,10 +1,9 @@
 package com.keepcoding.marvelapp.ui.detail
 
-import android.graphics.BlendModeColorFilter
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -40,8 +38,10 @@ import com.keepcoding.marvelapp.domain.model.Comic
 import com.keepcoding.marvelapp.domain.model.HeroDetail
 import com.keepcoding.marvelapp.domain.model.Serie
 import com.keepcoding.marvelapp.ui.commons.Mocks
+import com.keepcoding.marvelapp.ui.commons.components.SectionHeader
 import com.keepcoding.marvelapp.ui.theme.HalfPadding
 import com.keepcoding.marvelapp.ui.theme.NormalPadding
+import com.keepcoding.marvelapp.ui.theme.ZeroPadding
 
 @Composable
 fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel = hiltViewModel()) {
@@ -56,6 +56,8 @@ fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel = hiltVie
 
 @Composable
 fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<Serie>) {
+    val context = LocalContext.current
+
     val scrollState = rememberScrollState()
     Column(Modifier.verticalScroll(scrollState)) {
         Image(
@@ -70,8 +72,19 @@ fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<
             text = heroDetail.name,
             style = MaterialTheme.typography.h4,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(NormalPadding),
             textAlign = TextAlign.Center
+        )
+
+        SectionHeader(text = context.getString(R.string.description_label))
+
+        Text(
+            text = heroDetail.description.ifEmpty { context.getString(R.string.no_description) },
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = NormalPadding)
         )
 
         ComicsSwimlane(comics = comics)
@@ -82,21 +95,22 @@ fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<
 
 @Composable
 fun ComicsSwimlane(comics: List<Comic>) {
-    Column(Modifier.padding(NormalPadding)) {
+    Column() {
         val context = LocalContext.current
 
-        Text(
-            text = context.getString(R.string.comics_label),
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(vertical = HalfPadding)
-        )
+        SectionHeader(text = context.getString(R.string.comics_label))
         LazyRow(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(
-                NormalPadding
-            )
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(NormalPadding),
+            contentPadding = PaddingValues(horizontal = NormalPadding)
         ) {
             items(comics, key = { it.id }) {
-                SwimlaneItem(title = it.title, photo = it.photo)
+                SwimlaneItem(
+                    title = it.title,
+                    subtitle = context.getString(R.string.page_count_placeholder)
+                        .format(it.pageCount),
+                    photo = it.photo
+                )
             }
         }
     }
@@ -104,24 +118,29 @@ fun ComicsSwimlane(comics: List<Comic>) {
 
 @Composable
 fun SeriesSwimlane(series: List<Serie>) {
-    Column(Modifier.padding(NormalPadding)) {
+    Column {
         val context = LocalContext.current
 
-        Text(text = context.getString(R.string.series_label), style = MaterialTheme.typography.h5)
+        SectionHeader(text = context.getString(R.string.series_label))
+
         LazyRow(
-            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(
-                NormalPadding
-            )
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(NormalPadding),
+            contentPadding = PaddingValues(horizontal = NormalPadding)
         ) {
             items(series, key = { it.id }) {
-                SwimlaneItem(title = it.title, photo = it.photo, modifier = Modifier.fillMaxWidth())
+                SwimlaneItem(
+                    title = it.title,
+                    subtitle = "${it.startYear}-${it.endYear}",
+                    photo = it.photo
+                )
             }
         }
     }
 }
 
 @Composable
-fun SwimlaneItem(title: String, photo: String, modifier: Modifier = Modifier) {
+fun SwimlaneItem(title: String, subtitle: String, photo: String, modifier: Modifier = Modifier) {
     Card(Modifier.fillMaxWidth()) {
         Row {
             AsyncImage(
@@ -132,15 +151,22 @@ fun SwimlaneItem(title: String, photo: String, modifier: Modifier = Modifier) {
                 placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = title
             )
+
             Spacer(modifier = Modifier.size(HalfPadding))
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.width(150.dp),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(modifier = Modifier.width(150.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.h6,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.subtitle1,
+                )
+            }
         }
     }
 }

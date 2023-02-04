@@ -1,13 +1,10 @@
 package com.keepcoding.marvelapp.ui.herolist
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +26,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -41,18 +37,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.keepcoding.marvelapp.R
 import com.keepcoding.marvelapp.domain.model.Hero
 import com.keepcoding.marvelapp.ui.commons.Mocks
 import com.keepcoding.marvelapp.ui.commons.components.MarvelTopBar
 import com.keepcoding.marvelapp.ui.theme.HalfPadding
-import java.util.concurrent.Flow
 
 @Composable
 fun HeroScreen(
     heroViewModel: HeroViewModel = hiltViewModel(),
-    navigateToDetail: (Int) -> (Unit),
+    navigateToDetail: (Int) -> (Unit)
 ) {
     val state by heroViewModel.state.collectAsState()
     val heroList = state.heros

@@ -6,3 +6,4 @@ val DefaultPadding = 16.dp
 val NormalPadding = DefaultPadding
 val HalfPadding = NormalPadding / 2
 val DoublePadding = NormalPadding * 2
+val ZeroPadding = 0.dp

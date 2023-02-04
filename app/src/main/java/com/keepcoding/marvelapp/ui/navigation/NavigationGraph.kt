@@ -1,5 +1,6 @@
 package com.keepcoding.marvelapp.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,9 +15,9 @@ fun NavigationGraph() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppScreens.HeroListScreen.route) {
         composable(AppScreens.HeroListScreen.route) {
-            HeroScreen {
+            HeroScreen(navigateToDetail = {
                 navController.navigate(AppScreens.HeroDetailScreen.getRoute(it))
-            }
+            })
         }
 
         composable(
