@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.keepcoding.marvelapp.R
@@ -41,10 +40,9 @@ import com.keepcoding.marvelapp.ui.commons.Mocks
 import com.keepcoding.marvelapp.ui.commons.components.SectionHeader
 import com.keepcoding.marvelapp.ui.theme.HalfPadding
 import com.keepcoding.marvelapp.ui.theme.NormalPadding
-import com.keepcoding.marvelapp.ui.theme.ZeroPadding
 
 @Composable
-fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel = hiltViewModel()) {
+fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel) {
     val state by heroDetailViewModel.state.collectAsState()
 
     LaunchedEffect(key1 = id) {
@@ -55,7 +53,7 @@ fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel = hiltVie
 }
 
 @Composable
-fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<Serie>) {
+private fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<Serie>) {
     val context = LocalContext.current
 
     val scrollState = rememberScrollState()
@@ -94,7 +92,7 @@ fun HeroDetailContent(heroDetail: HeroDetail, comics: List<Comic>, series: List<
 }
 
 @Composable
-fun ComicsSwimlane(comics: List<Comic>) {
+private fun ComicsSwimlane(comics: List<Comic>) {
     Column() {
         val context = LocalContext.current
 
@@ -117,7 +115,7 @@ fun ComicsSwimlane(comics: List<Comic>) {
 }
 
 @Composable
-fun SeriesSwimlane(series: List<Serie>) {
+private fun SeriesSwimlane(series: List<Serie>) {
     Column {
         val context = LocalContext.current
 
@@ -140,7 +138,12 @@ fun SeriesSwimlane(series: List<Serie>) {
 }
 
 @Composable
-fun SwimlaneItem(title: String, subtitle: String, photo: String, modifier: Modifier = Modifier) {
+private fun SwimlaneItem(
+    title: String,
+    subtitle: String,
+    photo: String,
+    modifier: Modifier = Modifier
+) {
     Card(Modifier.fillMaxWidth()) {
         Row {
             AsyncImage(
@@ -173,6 +176,6 @@ fun SwimlaneItem(title: String, subtitle: String, photo: String, modifier: Modif
 
 @Preview(showBackground = true)
 @Composable
-fun HeroDetailContent_Preview() {
+private fun HeroDetailContent_Preview() {
     HeroDetailContent(Mocks.getHeroDetail(), Mocks.getComics(), Mocks.getSeries())
 }

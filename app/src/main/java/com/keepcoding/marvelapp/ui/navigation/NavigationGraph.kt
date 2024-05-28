@@ -8,14 +8,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.keepcoding.marvelapp.ui.detail.HeroDetailScreen
+import com.keepcoding.marvelapp.ui.detail.HeroDetailViewModel
 import com.keepcoding.marvelapp.ui.herolist.HeroScreen
+import com.keepcoding.marvelapp.ui.herolist.HeroViewModel
 
 @Composable
-fun NavigationGraph() {
+fun NavigationGraph(heroViewModel: HeroViewModel, heroDetailViewModel: HeroDetailViewModel) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppScreens.HeroListScreen.route) {
         composable(AppScreens.HeroListScreen.route) {
-            HeroScreen(navigateToDetail = {
+            HeroScreen(heroViewModel = heroViewModel, navigateToDetail = {
                 navController.navigate(AppScreens.HeroDetailScreen.getRoute(it))
             })
         }
@@ -28,7 +30,7 @@ fun NavigationGraph() {
             })
         ) { backStackEntry ->
             backStackEntry.arguments?.getInt(AppScreens.HeroDetailScreen.ARG_ID)
-                ?.let { id -> HeroDetailScreen(id) }
+                ?.let { id -> HeroDetailScreen(id = id, heroDetailViewModel = heroDetailViewModel) }
         }
     }
 }

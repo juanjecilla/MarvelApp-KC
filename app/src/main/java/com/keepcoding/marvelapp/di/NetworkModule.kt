@@ -1,6 +1,5 @@
 package com.keepcoding.marvelapp.di
 
-import com.keepcoding.marvelapp.BuildConfig
 import com.keepcoding.marvelapp.data.repository.remote.MarvelApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -23,7 +22,7 @@ object NetworkModule {
 
     private const val BASE_URL = "https://gateway.marvel.com"
 
-    fun md5(input:String): String {
+    private fun md5(input: String): String {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
@@ -39,14 +38,13 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
         val clientBuilder = OkHttpClient.Builder()
-        if (BuildConfig.DEBUG) {
-            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-            clientBuilder.addInterceptor(httpLoggingInterceptor)
-        }
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        clientBuilder.addInterceptor(httpLoggingInterceptor)
         clientBuilder.addInterceptor {
             val ts = System.currentTimeMillis()
             val originalRequest = it.request()
-            val hash = md5("${ts}3e47ad8778a31d615699d6d5685dadf82f843ad01433ceeca9030f34da73d0bbe4d722e1")
+            val hash =
+                md5("${ts}3e47ad8778a31d615699d6d5685dadf82f843ad01433ceeca9030f34da73d0bbe4d722e1")
             val url = originalRequest.url.newBuilder()
                 .addQueryParameter("ts", ts.toString())
                 .addQueryParameter("apikey", "1433ceeca9030f34da73d0bbe4d722e1")

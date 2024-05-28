@@ -2,6 +2,8 @@ package com.keepcoding.marvelapp.ui.herolist
 
 import com.keepcoding.marvelapp.domain.model.Hero
 
-data class HeroListState(
-    val heros: List<Hero>
-)
+sealed class HeroListState {
+    data object Loading : HeroListState()
+    class Content(val heros: List<Hero>) : HeroListState()
+    class Error(val message: String) : HeroListState()
+}

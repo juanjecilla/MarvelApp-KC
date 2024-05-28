@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,17 +23,19 @@ class HeroDetailViewModel @Inject constructor(
 
     fun getHeroDetail(id: Int) {
         viewModelScope.launch {
-            repository.getHeroDetail(id).flowOn(dispatcher).collect {
-                _state.update { state -> state.copy(hero = it) }
-            }
-
-            repository.getHeroSeries(id).flowOn(dispatcher).collect {
-                _state.update { state -> state.copy(series = it) }
-            }
-
-            repository.getHeroComics(id).flowOn(dispatcher).collect {
-                _state.update { state -> state.copy(comics = it) }
-            }
+            combine(
+                repository.getHeroDetail(id),
+                repository.getHeroSeries(id),
+                repository.getHeroComics(id)
+            ) { detail, series, comics ->
+                _state.update { state ->
+                    state.copy(
+                        hero = detail,
+                        series = series,
+                        comics = comics
+                    )
+                }
+            }.flowOn(dispatcher).collect {}
         }
     }
 }

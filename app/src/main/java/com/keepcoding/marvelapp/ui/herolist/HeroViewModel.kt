@@ -19,20 +19,20 @@ class HeroViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val repository: Repository,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(HeroListState(listOf()))
+    private val _state: MutableStateFlow<HeroListState> = MutableStateFlow(HeroListState.Loading)
     val state: StateFlow<HeroListState> get() = _state
 
     init {
         viewModelScope.launch(dispatcher) {
-            repository.getHeros().flowOn(dispatcher).collect {
-                _state.update { state -> state.copy(heros = it) }
+            repository.getHeros().flowOn(dispatcher).collect { heros ->
+                _state.update { HeroListState.Content(heros) }
             }
         }
     }
 
-    fun toggleFavourite(hero: Hero){
+    fun toggleFavourite(hero: Hero) {
         viewModelScope.launch {
-            withContext(dispatcher){
+            withContext(dispatcher) {
                 repository.toggleFavourite(hero)
             }
         }

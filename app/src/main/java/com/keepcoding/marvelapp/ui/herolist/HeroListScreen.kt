@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.keepcoding.marvelapp.R
 import com.keepcoding.marvelapp.domain.model.Hero
@@ -45,20 +44,35 @@ import com.keepcoding.marvelapp.ui.theme.HalfPadding
 
 @Composable
 fun HeroScreen(
-    heroViewModel: HeroViewModel = hiltViewModel(),
+    heroViewModel: HeroViewModel,
     navigateToDetail: (Int) -> (Unit)
 ) {
-    val state by heroViewModel.state.collectAsState()
-    val heroList = state.heros
+    val state by heroViewModel.state.collectAsStateWithLifecycle(
+        lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    )
 
-    HeroScreenContent(heroList = heroList, navigateToDetail = navigateToDetail, onFavClicked = {
-        heroViewModel.toggleFavourite(it)
-    })
+    when (state) {
+        is HeroListState.Content -> {
+            HeroScreen_Content(
+                state = state as HeroListState.Content,
+                navigateToDetail = navigateToDetail,
+                onFavClicked = {
+                    heroViewModel.toggleFavourite(it)
+                })
+        }
+
+        is HeroListState.Error -> {}
+        HeroListState.Loading -> {
+
+        }
+    }
+
+
 }
 
 @Composable
-fun HeroScreenContent(
-    heroList: List<Hero>,
+private fun HeroScreen_Content(
+    state: HeroListState.Content,
     navigateToDetail: (Int) -> (Unit),
     onFavClicked: (Hero) -> Unit,
 ) {
@@ -75,7 +89,7 @@ fun HeroScreenContent(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(HalfPadding)
             ) {
-                items(heroList, key = { it.id }) {
+                items(state.heros, key = { it.id }) {
                     HeroItem(it, navigateToDetail, onFavClicked = onFavClicked)
                 }
             }
@@ -85,12 +99,14 @@ fun HeroScreenContent(
 }
 
 @Composable
-fun HeroItem(hero: Hero, navigateToDetail: (Int) -> Unit, onFavClicked: (Hero) -> Unit) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(HalfPadding)
-        .clickable { navigateToDetail(hero.id) },
-    elevation = 8.dp) {
+private fun HeroItem(hero: Hero, navigateToDetail: (Int) -> Unit, onFavClicked: (Hero) -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(HalfPadding)
+            .clickable { navigateToDetail(hero.id) },
+        elevation = 8.dp
+    ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 AsyncImage(
@@ -151,6 +167,9 @@ fun HeroItem(hero: Hero, navigateToDetail: (Int) -> Unit, onFavClicked: (Hero) -
 
 @Preview(showBackground = true)
 @Composable
-fun HeroScreenContent_Preview() {
-    HeroScreenContent(heroList = Mocks.getHeros(), navigateToDetail = {}, onFavClicked = {})
+private fun HeroScreenContent_Preview() {
+    HeroScreen_Content(
+        state = HeroListState.Content(Mocks.getHeros()),
+        navigateToDetail = {},
+        onFavClicked = {})
 }
