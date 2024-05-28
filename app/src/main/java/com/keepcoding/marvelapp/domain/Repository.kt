@@ -7,7 +7,7 @@ import com.keepcoding.marvelapp.domain.model.Serie
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    suspend fun getHeros(): Flow<Result<List<Hero>>>
+    suspend fun getHeros(): Flow<List<Hero>>
     suspend fun getHeroDetail(id: Int): Flow<HeroDetail>
     suspend fun getHeroSeries(id: Int): Flow<List<Serie>>
     suspend fun getHeroComics(id: Int): Flow<List<Comic>>

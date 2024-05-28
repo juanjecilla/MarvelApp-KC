@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.keepcoding.marvelapp.R
@@ -42,7 +43,7 @@ import com.keepcoding.marvelapp.ui.theme.HalfPadding
 import com.keepcoding.marvelapp.ui.theme.NormalPadding
 
 @Composable
-fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel) {
+fun HeroDetailScreen(id: Int, heroDetailViewModel: HeroDetailViewModel = hiltViewModel()) {
     val state by heroDetailViewModel.state.collectAsState()
 
     LaunchedEffect(key1 = id) {

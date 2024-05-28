@@ -20,29 +20,26 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val heroViewModel: HeroViewModel by viewModels()
-    private val heroDetailViewModel: HeroDetailViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CompositionLocalProvider(
                 androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
             ) {
-                AppContent(heroViewModel, heroDetailViewModel)
+                AppContent()
             }
         }
     }
 }
 
 @Composable
-fun AppContent(heroViewModel: HeroViewModel, heroDetailViewModel: HeroDetailViewModel) {
+fun AppContent() {
     MyApplicationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            NavigationGraph(heroViewModel, heroDetailViewModel)
+            NavigationGraph()
         }
     }
 }
